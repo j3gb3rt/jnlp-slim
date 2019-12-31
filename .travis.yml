@@ -1,0 +1,17 @@
+language: generic
+
+services:
+  - docker
+branches:
+  only:
+  - master
+
+before_install:
+  - docker pull hadolint/hadolint
+
+script:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+  - docker run --rm -i hadolint/hadolint hadolint --ignore DL3018 - < Dockerfile
+  - docker build -t jegbertmanh/jnlp-slim:latest .
+  - docker push jegbertmanh/jnlp-slim:latest
